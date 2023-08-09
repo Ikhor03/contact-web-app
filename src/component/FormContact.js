@@ -1,10 +1,16 @@
 import { Button, Center, Divider, FormControl, FormErrorMessage, Heading, Input, InputGroup, InputLeftElement, Stack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { FaAddressBook, FaAddressCard, FaMailBulk, FaPhone } from 'react-icons/fa'
+import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { selectAllContact } from '../features/contact/sliceContact'
 
-const FormContact = ({title}) => {
+const FormContact = ({ title }) => {
+    const contacts = useSelector(selectAllContact)
+    console.log(contacts)
     const [input, setInput] = useState({
-        fullname: "",
+        firstName: "",
+        lastName : "",
         phoneNumber: "",
         email: "",
         address: ""
@@ -40,15 +46,29 @@ const FormContact = ({title}) => {
                                 <FaAddressBook color='gray.300' />
                             </InputLeftElement>
                             <Input
-                                name='fullname'
+                                name='firstName'
                                 focusBorderColor='whatsapp'
                                 variant='flushed'
                                 onChange={handleInputChange}
-                                value={input.fullname}
-                                placeholder='Fullname'
+                                value={input.firstName}
+                                placeholder='First Name'
                             />
                         </InputGroup>
                         {handleError(isError)}
+
+                        <InputGroup>
+                            <InputLeftElement pointerEvents='none'>
+                                <FaAddressBook color='gray.300' />
+                            </InputLeftElement>
+                            <Input
+                                name='lastName'
+                                focusBorderColor='whatsapp'
+                                variant='flushed'
+                                onChange={handleInputChange}
+                                value={input.lastName}
+                                placeholder='Last Name'
+                            />
+                        </InputGroup>
 
                         <InputGroup>
                             <InputLeftElement pointerEvents='none'>
@@ -97,7 +117,12 @@ const FormContact = ({title}) => {
                             onClick={handleSubmit}
                             colorScheme='whatsapp'
                         >
-                            SIMPAN
+                            SAVE
+                        </Button>
+                        <Button colorScheme='whatsapp' >
+                            <Link to='/' >
+                                CENCEL
+                            </Link>
                         </Button>
 
                     </Stack>
