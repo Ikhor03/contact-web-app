@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { FaRegEdit, FaTrashAlt } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { getContact, selectAllContact, selectStatusContact } from '../features/contact/sliceContact'
+import { getContact, selectAllContact, selectStatusContact, setStatus } from '../features/contact/sliceContact'
 
 const ContactList = () => {
     const contacts = useSelector(selectAllContact)
@@ -60,7 +60,7 @@ const ContactList = () => {
                                         <Td>{el.address.city}</Td>
                                         <Td >
                                             <Box display='flex' gap={3}>
-                                                <Link to="/edit">
+                                                <Link to={`/edit/${el.id}`} onClick={() => dispatch(setStatus())} >
                                                     <FaRegEdit />
                                                 </Link>
                                                 <FaTrashAlt />

@@ -8,6 +8,7 @@ const AddContact = () => {
             <Header />
             <FormContact
                 title={"+Add Contact"}
+                isNew={true}
             />
         </>
     )

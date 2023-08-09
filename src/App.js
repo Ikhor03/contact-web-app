@@ -21,7 +21,7 @@ function App() {
           <Routes>
             <Route path='/' element={<Main/>} />
             <Route path='/add' element={<AddContact/>} />
-            <Route path='/edit' element={<EditContact/>} />
+            <Route path='/edit/:id' element={<EditContact/>} />
           </Routes>
         </BrowserRouter>
       </Grid>
