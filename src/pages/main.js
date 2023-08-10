@@ -7,8 +7,6 @@ import { useDispatch } from 'react-redux'
 
 const Main = () => {
     // TODO: 
-    // edit contact
-    // create contact
     // delete contact
     const dispatch = useDispatch()
     useEffect(() => {

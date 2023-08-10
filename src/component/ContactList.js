@@ -1,25 +1,59 @@
-import { Box, Center, Spinner, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr } from '@chakra-ui/react'
+import { Alert, AlertIcon, Box, Button, Center, Spinner, Table, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr } from '@chakra-ui/react'
 import React, { useEffect } from 'react'
 import { FaRegEdit, FaTrashAlt } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { getContact, selectAllContact, selectStatusContact } from '../features/contact/sliceContact'
+import { deleteContact, getContact, selectAlert, selectAllContact, selectStatusContact, setAlert } from '../features/contact/sliceContact'
 
 const ContactList = () => {
     const contacts = useSelector(selectAllContact)
     const dispatch = useDispatch()
     const contactStatus = useSelector(selectStatusContact)
-    
+    const alert = useSelector(selectAlert)
+
     useEffect(() => {
         if (contactStatus === 'idle') {
             dispatch(getContact())
         }
+        console.log(contactStatus)
     }, [dispatch, contactStatus])
+
+    // conditional rendering for alert
+    let alertComponent = ''
+    if (alert !== 'none') {
+        alertComponent = (
+            <Alert 
+                status={alert === 'deleted' ? 'error' : 'success'} 
+                variant='subtle'
+                position='fixed'
+                top='20'
+            >
+                <AlertIcon />
+                {
+                    alert === 'deleted' ? 
+                    'Contact deleted!' : 
+                    'Contact added to the server. Fire on!'
+                }
+                
+            </Alert>
+        )
+        
+    }
+    setTimeout(() => {
+        dispatch(setAlert('none'))
+    }, "4000");
+
+    // Handling delete button
+    const handleDelete = (id) => {
+        dispatch(deleteContact(id))
+        dispatch(setAlert('deleted'))
+    }
 
     return (
         <>
+            {alertComponent}
             {
-                contactStatus === 'loading' &&
+                contactStatus === 'loading' || contactStatus === 'idle' &&
                 <Box bg='gray.100' opacity='10'>
                     <Center>
                         <Spinner
@@ -62,9 +96,14 @@ const ContactList = () => {
                                         <Td >
                                             <Box display='flex' gap={3}>
                                                 <Link to={`/edit/${el.id}`} >
-                                                    <FaRegEdit />
+                                                    <Button>
+                                                        <FaRegEdit />
+                                                    </Button>
                                                 </Link>
-                                                <FaTrashAlt />
+
+                                                <Button>
+                                                    <FaTrashAlt onClick={() => handleDelete(el.id)} />
+                                                </Button>
                                             </Box>
                                         </Td>
                                     </Tr>

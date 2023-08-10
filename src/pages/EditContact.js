@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import FormContact from '../component/FormContact'
 import Header from '../component/Header'
-import { getContactById, selectStatusContact, setStatus, updateContact } from '../features/contact/sliceContact'
+import { getContactById, selectStatusContact, setAlert, setStatus, updateContact } from '../features/contact/sliceContact'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 
@@ -14,6 +14,7 @@ const EditContact = () => {
     const handleSubmit = (input) => {
         dispatch(updateContact({ id, input }))
         dispatch(setStatus())
+        dispatch(setAlert('updated'))
         navigate("/");
     }
 

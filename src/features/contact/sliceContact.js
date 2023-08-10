@@ -6,7 +6,8 @@ const initialState = {
     contacts: [],
     updatedData: [],
     error: null,
-    status: 'idle'
+    status: 'idle',
+    alert : 'none'
 }
 const baseURL = 'https://dummyjson.com/users'
 
@@ -26,7 +27,6 @@ export const updateContact = createAsyncThunk('contact/updateContact', async ({ 
 })
 
 export const addContact = createAsyncThunk('contact/addContact', async (input) => {
-    console.log({ input })
     const res = await axios.post(`${baseURL}/add`, input)
     return res.data
 })
@@ -36,15 +36,19 @@ const contactSlice = createSlice({
     initialState,
     reducers: {
         deleteContact: (state, action) => {
-            state.contacts = state.filter((el) => el.id !== action.payload)
+            state.contacts = state.contacts.filter((el) => el.id !== action.payload)
         },
         setStatus: (state, action) => {
             state.status = 'idle'
+        },
+        setAlert: (state, action) => {
+            state.alert = action.payload
         }
     },
     extraReducers: builder => {
         builder
             .addCase(getContact.pending, (state, action) => {
+                // console.log('loading')
                 state.status = 'loading'
             })
             .addCase(getContact.fulfilled, (state, action) => {
@@ -78,22 +82,22 @@ const contactSlice = createSlice({
                 state.updatedData = uniqueData
             })
             // Case when fetch add contact
+            .addCase(addContact.pending, (state, action) => {
+                state.status = 'loading'
+            })
             .addCase(addContact.fulfilled, (state, action) => {
                 state.status = 'succeeded'
-                console.log(action.payload)
                 const uniqueData = state.updatedData.filter((el) => {
                     return el.id !== action.payload.id
                 })
                 uniqueData.push(action.payload)
                 state.updatedData = uniqueData
             })
-            .addCase(addContact.pending, (state, action) => {
-                state.status = 'loading'
-            })
+            
     }
 })
 
-export const { deleteContact, setStatus } = contactSlice.actions
+export const { deleteContact, setStatus, setAlert } = contactSlice.actions
 
 export default contactSlice.reducer
 
@@ -101,3 +105,4 @@ export const selectAllContact = (state) => state.contacts
 export const selectUpdateContact = (state) => state.updatedData
 export const selectStatusContact = (state) => state.status
 export const selectErrorContact = (state) => state.error
+export const selectAlert = (state) => state.alert
