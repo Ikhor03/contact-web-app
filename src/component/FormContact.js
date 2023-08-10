@@ -34,22 +34,29 @@ const FormContact = ({ title, isNew, handleSubmit }) => {
     useEffect(() => {
         // Set input if contacts is contain only one item (thats mean contact by id)
         // and the form is not in "add contact" page / isNew
-        console.log({contacts})
         if (contacts?.length === 1 && !isNew) {
             setInput({
                 firstName: contacts[0]?.firstName,
                 lastName: contacts[0]?.lastName,
                 phone: contacts[0]?.phone,
                 email: contacts[0]?.email,
-                address: contacts[0]?.address.city
+                address: { city: contacts[0]?.address.city }
             })
         }
     }, [dispatch, contacts])
 
+    useEffect(() => {
+        dispatch(setStatus())
+    }, [])
+
     const handleInputChange = (e) => {
         const key = e.target.name
         const value = e.target.value
-        setInput({ ...input, [key]: value })
+        if (key === 'address') {
+            setInput({...input, address: {city : value}})
+        } else {
+            setInput({ ...input, [key]: value })
+        }
     }
 
     // TODO: VALIDATE form using formErroMassage
@@ -132,7 +139,7 @@ const FormContact = ({ title, isNew, handleSubmit }) => {
                                 focusBorderColor='whatsapp'
                                 variant='flushed'
                                 onChange={handleInputChange}
-                                value={input.address}
+                                value={input.address.city}
                                 placeholder='Address'
                             />
                         </InputGroup>
@@ -143,7 +150,7 @@ const FormContact = ({ title, isNew, handleSubmit }) => {
                         >
                             SAVE
                         </Button>
-                        <Button colorScheme='whatsapp' onClick={() => dispatch(setStatus())}>
+                        <Button colorScheme='whatsapp'>
                             <Link to='/' >
                                 BACK
                             </Link>

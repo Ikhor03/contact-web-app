@@ -25,13 +25,16 @@ export const updateContact = createAsyncThunk('contact/updateContact', async ({ 
     return res.data
 })
 
+export const addContact = createAsyncThunk('contact/addContact', async (input) => {
+    console.log({ input })
+    const res = await axios.post(`${baseURL}/add`, input)
+    return res.data
+})
+
 const contactSlice = createSlice({
     name: "contact",
     initialState,
     reducers: {
-        addContact: (state, action) => {
-            state.contacts.push(action.payload)
-        },
         deleteContact: (state, action) => {
             state.contacts = state.filter((el) => el.id !== action.payload)
         },
@@ -65,15 +68,6 @@ const contactSlice = createSlice({
                 state.status = 'succeeded'
                 state.contacts = [action.payload]
             })
-            .addCase(getContactById.pending, (state, action) => {
-                state.status = 'loading'
-                state.contacts = action.payload
-            })
-            .addCase(getContactById.rejected, (state, action) => {
-                state.status = 'failed'
-                state.contacts = []
-                state.error = action.error
-            })
             // Case when fetch update contact
             .addCase(updateContact.fulfilled, (state, action) => {
                 state.status = 'succeeded'
@@ -83,17 +77,23 @@ const contactSlice = createSlice({
                 uniqueData.push(action.payload)
                 state.updatedData = uniqueData
             })
-            .addCase(updateContact.pending, (state, action) => {
-                state.status = 'loading'
+            // Case when fetch add contact
+            .addCase(addContact.fulfilled, (state, action) => {
+                state.status = 'succeeded'
+                console.log(action.payload)
+                const uniqueData = state.updatedData.filter((el) => {
+                    return el.id !== action.payload.id
+                })
+                uniqueData.push(action.payload)
+                state.updatedData = uniqueData
             })
-            .addCase(updateContact.rejected, (state, action) => {
-                state.status = 'failed'
-                state.error = action.error
+            .addCase(addContact.pending, (state, action) => {
+                state.status = 'loading'
             })
     }
 })
 
-export const { addContact, deleteContact, setStatus } = contactSlice.actions
+export const { deleteContact, setStatus } = contactSlice.actions
 
 export default contactSlice.reducer
 
