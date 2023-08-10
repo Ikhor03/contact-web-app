@@ -16,7 +16,7 @@ import EditContact from './pages/EditContact';
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <Grid p={2} gap={5}>
+      <Grid p={4} gap={5}>
         <BrowserRouter>
           <Routes>
             <Route path='/' element={<Main/>} />

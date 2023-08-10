@@ -1,15 +1,28 @@
-import { Button, Center, Divider, FormControl, FormErrorMessage, Heading, Input, InputGroup, InputLeftElement, Stack } from '@chakra-ui/react'
+import {
+    Button,
+    Center,
+    Divider,
+    FormControl,
+    FormErrorMessage,
+    Heading,
+    Input, 
+    InputGroup, 
+    InputLeftElement, 
+    Stack
+} from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { FaAddressBook, FaAddressCard, FaMailBulk, FaPhone } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useParams } from 'react-router-dom'
-import { getContactById, selectAllContact, selectStatusContact, setStatus } from '../features/contact/sliceContact'
+import { Link } from 'react-router-dom'
+import {
+    selectAllContact,
+    setStatus,
+} from '../features/contact/sliceContact'
 
-const FormContact = ({ title , isNew}) => {
+const FormContact = ({ title, isNew, handleSubmit }) => {
     const contacts = useSelector(selectAllContact)
-    const statusContact = useSelector(selectStatusContact)
     const dispatch = useDispatch()
-    const {id} = useParams()
+    
     const [input, setInput] = useState({
         firstName: "",
         lastName: "",
@@ -19,10 +32,10 @@ const FormContact = ({ title , isNew}) => {
     })
 
     useEffect(() => {
-        if (statusContact === 'idle' && id){
-            dispatch(getContactById(id))
-        }
-        if (statusContact === 'succeeded'){
+        // Set input if contacts is contain only one item (thats mean contact by id)
+        // and the form is not in "add contact" page / isNew
+        console.log({contacts})
+        if (contacts?.length === 1 && !isNew) {
             setInput({
                 firstName: contacts[0]?.firstName,
                 lastName: contacts[0]?.lastName,
@@ -31,30 +44,19 @@ const FormContact = ({ title , isNew}) => {
                 address: contacts[0]?.address.city
             })
         }
-        
-        if (isNew) {
-            setInput({})
-            dispatch(setStatus())
-        }
-    }, [dispatch, id, statusContact])
-
+    }, [dispatch, contacts])
 
     const handleInputChange = (e) => {
         const key = e.target.name
         const value = e.target.value
         setInput({ ...input, [key]: value })
     }
+
+    // TODO: VALIDATE form using formErroMassage
     const handleError = (isError) => isError && (
         <FormErrorMessage> is required.</FormErrorMessage>
     )
-
     const isError = input === ''
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        handleError(isError)
-        console.log(input)
-        alert("submitted")
-    }
 
     return (
         <>
@@ -77,7 +79,7 @@ const FormContact = ({ title , isNew}) => {
                                 placeholder='First Name'
                             />
                         </InputGroup>
-                        {handleError(isError)}
+                        {/* {handleError(isError)} */}
 
                         <InputGroup>
                             <InputLeftElement pointerEvents='none'>
@@ -136,15 +138,14 @@ const FormContact = ({ title , isNew}) => {
                         </InputGroup>
 
                         <Button
-                            type='submit'
-                            onClick={handleSubmit}
+                            onClick={() => handleSubmit(input)}
                             colorScheme='whatsapp'
                         >
                             SAVE
                         </Button>
                         <Button colorScheme='whatsapp' onClick={() => dispatch(setStatus())}>
                             <Link to='/' >
-                                CENCEL
+                                BACK
                             </Link>
                         </Button>
 
