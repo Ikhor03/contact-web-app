@@ -26,7 +26,11 @@ const ContactList = () => {
                 status={alert === 'deleted' ? 'error' : 'success'} 
                 variant='subtle'
                 position='fixed'
-                top='20'
+                top='10'
+                flexDirection='column'
+                alignItems='center'
+                justifyContent='center'
+                textAlign='center'
             >
                 <AlertIcon />
                 {
